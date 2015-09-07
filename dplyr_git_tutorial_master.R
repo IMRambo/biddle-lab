@@ -1,6 +1,7 @@
 #dplyr and Git beginner tutorial
 #University of Delaware
 #Last updated: September 7, 2015
+#Ian Rambo
 #MASTER
 # ____  _     _     _ _        _           _     
 # |  _ \(_)   | |   | | |      | |         | |    
@@ -21,11 +22,15 @@ library(tidyr)
 library(vegan)
 #==============================================================================
 setwd("/Users/imrambo/Documents/Git/biddle-lab/")
+#==============================================================================
+#hflights
+#==============================================================================
 #Load the hflights dataset - all flights departing from Houston in 2011 
 library(hflights)
 
 #Display header and first four rows of hflights
 head(hflights, n = 4)
+#note that this data set is in long format
 dim(hflights)
 str(hflights)
 
@@ -46,10 +51,15 @@ Carriers <- data.frame(CarrierName, UniqueCarrier) %>%
     UniqueCarrier = as.character(UniqueCarrier))
 
 str(Carriers)
-
+#------------------------------------------------------------------------------
+#Let's make use of dplyr's %>% operator, which allows us to chain
+#operations together. 
 carrierVelocity <- hflights %>% filter(Cancelled == 0) %>%
-  rename(DistanceMiles = Distance) %>%
-  left_join(Carriers) %>%
+  rename(DistanceMiles = Distance) %>% #rename variable
+  left_join(Carriers) %>% #join the current dataframe and Carriers dataframe
+  #by a common variable.
+  #mutate() allows you to create new variables, and build new variables off
+  #created variables.
   mutate(
     DistanceKm = DistanceMiles/0.62137,
     #Average air velocity, Km/hr
@@ -61,9 +71,12 @@ carrierVelocity <- hflights %>% filter(Cancelled == 0) %>%
                                sep = "-"),
                          format = "%j"))) %>%
   group_by(UniqueCarrier) %>%
+  #select certain variables
   select(DayOfYear, Month, DistanceKm, AvgAirVelocity, UniqueCarrier,
          CarrierName)
-  
+#------------------------------------------------------------------------------
+#dplyr can perform chained operations on data frames without having to save
+#the intermediate results
 carrierVelocity %>% group_by(DayOfYear, UniqueCarrier,
                              CarrierName) %>%
   #DMAV - Daily Mean Air Velocity - daily mean air velocity (km/hr) for
@@ -76,13 +89,14 @@ carrierVelocity %>% group_by(DayOfYear, UniqueCarrier,
   filter(UniqueCarrier == "AA"|
            UniqueCarrier == "FL"|
            UniqueCarrier == "AS") %>%
+  #we can pipe right into ggplot2
   ggplot(aes(x = DayOfYear, y = DMAV,
              shape = factor(CarrierName),
              size = DMAD, color = factor(CarrierName))) +
   geom_point(alpha = 0.55) +
   scale_shape_manual(name = "Carrier", values = c(15, 17, 19)) +
   scale_color_manual(name = "Carrier",
-                       values = c("#009E73", "#56B4E9", "#CC79A7")) +
+                     values = c("#009E73", "#56B4E9", "#CC79A7")) +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.background = element_blank(),
@@ -90,13 +104,20 @@ carrierVelocity %>% group_by(DayOfYear, UniqueCarrier,
         legend.key.size = unit(0.6, "cm")) +
   xlab("Day of Year") + ylab("Daily Mean Air Velocity (km/hr)") +
   scale_x_continuous(limits = c(1, 365))
-  
+#==============================================================================
+#BCI
 #==============================================================================
 #Let's work with community population data - Barro Colorado Island tree counts
 #from the vegan package
 
 #Load BCI data from the vegan package
 data(BCI, package = "vegan")
+dim(BCI)
+str(BCI)
+
+#The hflights dataset was in long format, while BCI is in wide format. We can
+#use the tidyr package to convert between wide and long.
+
 #Create a character vector containing the 50 sites
 BCI$Site <- as.character(paste("Site", 1:50))
 
