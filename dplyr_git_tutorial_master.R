@@ -9,6 +9,7 @@
 # | |_) | | (_| | (_| | |  __/ | |___| (_| | |_) |
 # |____/|_|\__,_|\__,_|_|\___| |______\__,_|_.__/       
 
+#GitHub repository URL: https://github.com/IMRambo/biddle-lab.git
 #==============================================================================
 #GOAL: learn how to use dplyr functions for data wrangling.
 #Combine dplyr, tidyr, and ggplot functions.
@@ -28,12 +29,13 @@ head(hflights, n = 4)
 dim(hflights)
 str(hflights)
 
-#Carrier names, some real, some fake, some goofy.
+#Carrier names, some real, most fake and/or goofy.
 CarrierName <- c("American Airlines", "Lufthansa", "Fly Like a B6",
                  "Colorado Air", "HushHush Air", "Flying Monkey Air",
                  "Uzbekistan Airlines","US Air", "Windy Air", "Evil Air",
-                 "FinnAir", "Soul Plane","Air Morocco", "Xenomorph Air",
-                 "Air Yugoslavia")
+                 "FinnAir", "Soul Plane","Air Morocco",
+                 "Xenophobic International", "Air Yugoslavia")
+#Unique values of Houston carrier codes; pair with CarrierName vector
 UniqueCarrier <- unique(hflights$UniqueCarrier)
 
 #Create a data frame of character vectors containing "airline names" and
@@ -52,6 +54,7 @@ carrierVelocity <- hflights %>% filter(Cancelled == 0) %>%
     DistanceKm = DistanceMiles/0.62137,
     #Average air velocity, Km/hr
     AvgAirVelocity = DistanceKm/(AirTime/60),
+    # %j format gives day of the year
     DayOfYear = as.numeric(strftime(paste(Year,
                                Month,
                                DayofMonth,
@@ -74,11 +77,12 @@ carrierVelocity %>% group_by(DayOfYear, Month, UniqueCarrier,
            UniqueCarrier == "FL"|
            UniqueCarrier == "AS") %>%
   ggplot(aes(x = DayOfYear, y = DMAV,
-             shape = factor(CarrierName))) +
-  geom_point(aes(color = DMAD)) +
+             shape = factor(CarrierName),
+             size = DMAD, color = factor(CarrierName))) +
+  geom_point(alpha = 0.55) +
   scale_shape_manual(name = "Carrier", values = c(15, 17, 19)) +
-  scale_color_gradient(name = "Daily Mean Air Distance (km)",
-                       low = "blue", high = "red") +
+  scale_color_manual(name = "Carrier",
+                       values = c("#009E73", "#56B4E9", "#CC79A7")) +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.background = element_blank(),
