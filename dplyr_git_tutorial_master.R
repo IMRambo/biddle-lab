@@ -1,4 +1,4 @@
-#dplyr and Git tutorial
+#dplyr and Git beginner tutorial
 #University of Delaware
 #Last updated: September 7, 2015
 
