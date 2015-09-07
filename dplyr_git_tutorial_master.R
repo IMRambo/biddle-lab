@@ -86,9 +86,11 @@ carrierVelocity %>% group_by(DayOfYear, UniqueCarrier,
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.background = element_blank(),
-        axis.line = element_line(color = "black")) +
+        axis.line = element_line(color = "black"),
+        legend.key.size = unit(0.6, "cm")) +
   xlab("Day of Year") + ylab("Daily Mean Air Velocity (km/hr)") +
   scale_x_continuous(limits = c(1, 365))
+  
 #==============================================================================
 #Let's work with community population data - Barro Colorado Island tree counts
 #from the vegan package
