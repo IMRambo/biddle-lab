@@ -64,7 +64,7 @@ carrierVelocity <- hflights %>% filter(Cancelled == 0) %>%
   select(DayOfYear, Month, DistanceKm, AvgAirVelocity, UniqueCarrier,
          CarrierName)
   
-carrierVelocity %>% group_by(DayOfYear, Month, UniqueCarrier,
+carrierVelocity %>% group_by(DayOfYear, UniqueCarrier,
                              CarrierName) %>%
   #DMAV - Daily Mean Air Velocity - daily mean air velocity (km/hr) for
   #all flights of a carrier
