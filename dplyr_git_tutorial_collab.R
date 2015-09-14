@@ -50,7 +50,22 @@ Carriers <- data.frame(CarrierName, UniqueCarrier) %>%
 
 str(Carriers)
 
-hflights %>% filter(Cancelled == 0) %>%
+carrierVelocity <- hflights %>% filter(Cancelled == 0) %>%
   rename(DistanceMiles = Distance) %>%
-  left_join(Carriers)
+  left_join(Carriers) %>%
+  mutate(
+    DistanceKm = DistanceMiles/0.62137,
+    AvgAirVelocity = DistanceKm/(AirTime/60),
+    DayOfYear = as.numeric(strftime(paste(Year,
+                                          Month,
+                                          DayofMonth,
+                                          sep = "-"),
+                                    format = "%j"))) %>%
+  select(DayOfYear, DistanceKm,
+         AvgAirVelocity, UniqueCarrier, CarrierName)
+#This is a new part of the code
+print("Hello World")
+#==============================================================================  
+  
+
 
