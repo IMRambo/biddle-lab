@@ -47,3 +47,11 @@ Carriers <- data.frame(CarrierName, UniqueCarrier) %>%
     UniqueCarrier = as.character(UniqueCarrier))
 
 str(Carriers)
+#=================================================
+hflights %>% filter(Cancelled == 0) %>%
+  dplyr::rename(DistanceMiles = Distance) %>%
+  left_join(Carriers) %>%
+  
+  
+  
+

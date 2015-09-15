@@ -2,7 +2,6 @@
 #University of Delaware
 #Last updated: September 7, 2015
 #Ian Rambo
-#MASTER
 # ____  _     _     _ _        _           _     
 # |  _ \(_)   | |   | | |      | |         | |    
 #   | |_) |_  __| | __| | | ___  | |     __ _| |__  
@@ -18,10 +17,11 @@
 #==============================================================================
 library(dplyr)
 library(ggplot2)
+library(grid)
 library(tidyr)
 library(vegan)
 #==============================================================================
-setwd("/Users/imrambo/Documents/Git/biddle-lab/")
+#setwd("/Users/imrambo/Documents/Git/biddle-lab/")
 #==============================================================================
 #hflights
 #==============================================================================
@@ -30,7 +30,7 @@ library(hflights)
 
 #Display header and first four rows of hflights
 head(hflights, n = 4)
-#note that this data set is in long format
+#note that this data frame is in long format
 dim(hflights)
 str(hflights)
 
@@ -45,10 +45,9 @@ UniqueCarrier <- unique(hflights$UniqueCarrier)
 
 #Create a data frame of character vectors containing "airline names" and
 #carrier codes.
-Carriers <- data.frame(CarrierName, UniqueCarrier) %>%
-  transmute(
-    CarrierName = as.character(CarrierName),
-    UniqueCarrier = as.character(UniqueCarrier))
+Carriers <- data.frame(CarrierName, UniqueCarrier)
+Carriers$CarrierName <- as.character(CarrierName),
+Carriers$UniqueCarrier <- as.character(UniqueCarrier))
 
 str(Carriers)
 #------------------------------------------------------------------------------
@@ -59,7 +58,7 @@ carrierVelocity <- hflights %>% filter(Cancelled == 0) %>%
   left_join(Carriers) %>% #join the current dataframe and Carriers dataframe
   #by a common variable.
   #mutate() allows you to create new variables, and build new variables off
-  #created variables.
+  #those variables.
   mutate(
     DistanceKm = DistanceMiles/0.62137,
     #Average air velocity, Km/hr
@@ -70,15 +69,15 @@ carrierVelocity <- hflights %>% filter(Cancelled == 0) %>%
                                DayofMonth,
                                sep = "-"),
                          format = "%j"))) %>%
-  group_by(UniqueCarrier) %>%
+  #group_by(UniqueCarrier) %>%
   #select certain variables
-  select(DayOfYear, Month, DistanceKm, AvgAirVelocity, UniqueCarrier,
+  select(DayOfYear, DistanceKm, AvgAirVelocity, UniqueCarrier,
          CarrierName)
 #------------------------------------------------------------------------------
 #dplyr can perform chained operations on data frames without having to save
 #the intermediate results
 carrierVelocity %>% group_by(DayOfYear, UniqueCarrier,
-                             CarrierName) %>%
+                             CarrierName) %>% 
   #DMAV - Daily Mean Air Velocity - daily mean air velocity (km/hr) for
   #all flights of a carrier
   #DMAD - Daily Mean Air Distance - daily mean air distance for
@@ -91,12 +90,14 @@ carrierVelocity %>% group_by(DayOfYear, UniqueCarrier,
            UniqueCarrier == "AS") %>%
   #we can pipe right into ggplot2
   ggplot(aes(x = DayOfYear, y = DMAV,
-             shape = factor(CarrierName),
+             #shape = factor(CarrierName),
              size = DMAD, color = factor(CarrierName))) +
-  geom_point(alpha = 0.55) +
-  scale_shape_manual(name = "Carrier", values = c(15, 17, 19)) +
+  geom_jitter(alpha = 0.55) +
+  #scale_shape_manual(name = "Carrier", values = c(15, 17, 19)) +
   scale_color_manual(name = "Carrier",
                      values = c("#009E73", "#56B4E9", "#CC79A7")) +
+ #geom_density2d(aes(colour = CarrierName), size = 0.5) +
+  #facet_grid(CarrierName ~ .) +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.background = element_blank(),
@@ -119,7 +120,7 @@ str(BCI)
 #use the tidyr package to convert between wide and long.
 
 #Create a character vector containing the 50 sites
-BCI$Site <- as.character(paste("Site", 1:50))
+BCI$Site <- paste("Site_", 1:50, sep = "")
 
 #Create a spread, e.g. wide data frame from BCI data. Columns are now
 #sites instead of species, with rows containing counts for each species. 
