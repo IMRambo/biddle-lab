@@ -40,3 +40,5 @@ CarrierName <- c("American Airlines", "Lufthansa", "Fly Like a B6",
                  "Xenophobic International", "Air Yugoslavia")
 #Unique values of Houston carrier codes; pair with CarrierName vector
 UniqueCarrier <- unique(hflights$UniqueCarrier)
+#==============================================================================
+#Let's begin here.
