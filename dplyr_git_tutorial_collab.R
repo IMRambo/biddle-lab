@@ -16,12 +16,14 @@
 #Combine dplyr, tidyr, and ggplot functions.
 #Collaborate on this script using Git.
 #==============================================================================
+library(plyr)
 library(dplyr)
 library(ggplot2)
+library(grid)
 library(tidyr)
 library(vegan)
 #==============================================================================
-setwd("/Users/imrambo/Documents/Git/biddle-lab/")
+#setwd("/Users/imrambo/Documents/Git/biddle-lab/")
 #Load the hflights dataset - all flights departing from Houston in 2011 
 library(hflights)
 
@@ -38,20 +40,3 @@ CarrierName <- c("American Airlines", "Lufthansa", "Fly Like a B6",
                  "Xenophobic International", "Air Yugoslavia")
 #Unique values of Houston carrier codes; pair with CarrierName vector
 UniqueCarrier <- unique(hflights$UniqueCarrier)
-
-#Create a data frame of character vectors containing "airline names" and
-#carrier codes.
-Carriers <- data.frame(CarrierName, UniqueCarrier) %>%
-  transmute(
-    CarrierName = as.character(CarrierName),
-    UniqueCarrier = as.character(UniqueCarrier))
-
-str(Carriers)
-#=================================================
-hflights %>% filter(Cancelled == 0) %>%
-  dplyr::rename(DistanceMiles = Distance) %>%
-  left_join(Carriers) %>%
-  
-  
-  
-
