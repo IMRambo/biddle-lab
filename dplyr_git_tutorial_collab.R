@@ -43,8 +43,8 @@ UniqueCarrier <- unique(hflights$UniqueCarrier)
 #Create a data frame of character vectors containing "airline names" and
 #carrier codes.
 Carriers <- data.frame(CarrierName, UniqueCarrier)
-Carriers$CarrierName <- as.character(CarrierName),
-Carriers$UniqueCarrier <- as.character(UniqueCarrier))
+Carriers$CarrierName <- as.character(CarrierName)
+Carriers$UniqueCarrier <- as.character(UniqueCarrier)
 str(Carriers)
 #==============================================================================
 #Let's make use of dplyr's %>% operator, which allows us to chain
