@@ -46,4 +46,7 @@ Carriers <- data.frame(CarrierName, UniqueCarrier)
 Carriers$CarrierName <- as.character(CarrierName),
 Carriers$UniqueCarrier <- as.character(UniqueCarrier))
 str(Carriers)
-
+#==============================================================================
+#Let's make use of dplyr's %>% operator, which allows us to chain
+#operations together. Combo attack!
+hflights %>%
